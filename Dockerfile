@@ -4,7 +4,7 @@ FROM \
 LABEL \
     name="bifrost-cge_resfinder" \
     description="Docker environment for cge_resfinder in bifrost" \
-    version="2.0" \
+    version="2.0.5" \
     DBversion="19/07/2019" \
     maintainer="kimn@ssi.dk;"
 
