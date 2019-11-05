@@ -1,5 +1,5 @@
 FROM \
-    ssidk/bifrost-base:2.0
+    ssidk/bifrost-base:2.0.5
 
 LABEL \
     name="bifrost-cge_resfinder" \
@@ -22,14 +22,16 @@ RUN \
     git clone --branch 1.2.10a https://bitbucket.org/genomicepidemiology/kma.git; \
     cd kma; \
     make;
-ENV PATH $PATH":/bifrost_resources/kma/"
+ENV \
+    PATH $PATH":/bifrost_resources/kma/"
 RUN \
     cd /bifrost_resources; \
     # Install cge Resfinder
     git clone https://bitbucket.org/genomicepidemiology/resfinder.git; \
     cd resfinder; \
     git checkout d210e15;
-ENV PATH $PATH":/bifrost_resources/resfinder/"
+ENV \
+    PATH $PATH":/bifrost_resources/resfinder/"
 RUN \
     cd /bifrost_resources; \
     # Install cge Resfinder DB
@@ -43,4 +45,6 @@ RUN \
     python3 INSTALL.py kma_index;
 
 ENTRYPOINT \
-    ["/bifrost_resources/docker_umask_002.sh"]
+    [ "/bifrost/whats_my_species/launcher.py"]
+CMD \
+    [ "/bifrost/whats_my_species/launcher.py", "--help"]
