@@ -15,13 +15,13 @@ LABEL \
 #- Tools to install:start---------------------------------------------------------------------------
 RUN \
     # For 'make' needed for kma
-    apt-get update && install -y -qq --fix-missing \
+    apt-get update &&  apt-get install -y -qq --fix-missing \
         build-essential \
         zlib1g-dev; \
     pip install -q \
         cgecore==1.5.0 \
         tabulate==0.8.3 \
-        biopython==1.74; \
+        biopython==1.74;
 # KMA
 RUN cd /bifrost_resources && \
     git clone --branch 1.2.10a https://bitbucket.org/genomicepidemiology/kma.git && \
