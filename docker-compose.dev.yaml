@@ -20,6 +20,6 @@ services:
       - ./tests:/bifrost_cge_resfinder/tests
       - ../../lib/bifrostlib:/bifrostlib
       # - ../bifrost_run_launcher/bifrost_run_launcher:/bifrost_run_launcher/bifrost_run_launcher
-    entrypoint: watchmedo auto-restart --recursive --pattern="*.py" --directory="/bifrost_cge_resfinder" -- pytest --verbose
+    entrypoint: watchmedo auto-restart --recursive --pattern="*.py" --directory="/bifrost_cge_resfinder" -- pytest --verbose --ignore=resources
     depends_on:
       - python
