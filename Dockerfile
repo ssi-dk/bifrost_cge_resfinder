@@ -50,6 +50,7 @@ LABEL \
 
 #- Tools to install:start---------------------------------------------------------------------------
 RUN \
+    conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==5.7.1; \
     # For 'make' needed for kma
     apt-get update &&  apt-get install -y -qq --fix-missing \
         build-essential \
