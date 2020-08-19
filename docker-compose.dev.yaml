@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  python:
+    build:
+      context: .
+      args:
+        BUILD_ENV: dev
+    env_file:
+      - .secrets/mongodb_dev_key.env
+  python-tests:
+    build:
+      context: .
+      args:
+        BUILD_ENV: dev
+    env_file:
+      - .secrets/mongodb_dev_key.env
+    working_dir: /bifrost_cge_resfinder/
+    volumes:
+      - ./bifrost_cge_resfinder:/bifrost_cge_resfinder/bifrost_cge_resfinder
+      - ./tests:/bifrost_cge_resfinder/tests
+      - ../../lib/bifrostlib:/bifrostlib
+      # - ../bifrost_run_launcher/bifrost_run_launcher:/bifrost_run_launcher/bifrost_run_launcher
+    entrypoint: watchmedo auto-restart --recursive --pattern="*.py" --directory="/bifrost_cge_resfinder" -- pytest --verbose
+    depends_on:
+      - python
