@@ -1,23 +1,29 @@
 #-Basic info----------------------------------------------------------------------------------------
-name: cge_resfinder
-version: 2.0.7
+display_name: cge_resfinder
+name: &name cge_resfinder__unspecified__unspecified
+version:
+  schema: 2.0
+  code: unspecified
+  resource: unspecified
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
 details:
-  category: resistance
-  schema_version: 2.0
   target: sample
-  type: pipeline
-  recommendation: recommended
   description: >
     This preforms read based mapping against the resfinder DB's. The options show the species entries 
     which will be attempted for mlst with key originating from the species DB. This is done against 
     the cge_db using kma mode. 
 #---------------------------------------------------------------------------------------------------
 
-#-Docker location-----------------------------------------------------------------------------------
-dockerfile: &dockerfile "docker://ssidk/bifrost-cge_resfinder:2.0.7"
+#-Category info-------------------------------------------------------------------------------------
+category: [resistance]
+#---------------------------------------------------------------------------------------------------
+
+#-Install-------------------------------------------------------------------------------------------
+install:
+  path: # Set by install program
+  dockerfile: docker://ssidk/bifrost_cge_resfinder:unspecified__unspecified
 #---------------------------------------------------------------------------------------------------
 
 #-Options-------------------------------------------------------------------------------------------
@@ -26,7 +32,7 @@ options:
 
 #-Required resource files---------------------------------------------------------------------------
 resources:
-  database_path: "/bifrost_resources/resfinder_db"
+  database_path: "/bifrost_cge_resfinder/resources/resfinder_db"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------
@@ -51,7 +57,7 @@ db_values_changes:
     report:
       resistance:
         title: "Resistance"
-        info: *dockerfile
+        info: *name
         columns: 
           - {id: "resistance_gene", name: "gene"}
           - {id: "coverage", name: "%cov"}
