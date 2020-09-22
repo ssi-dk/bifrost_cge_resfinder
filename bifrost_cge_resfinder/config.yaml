@@ -1,10 +1,10 @@
 #-Basic info----------------------------------------------------------------------------------------
 display_name: cge_resfinder
-name: &name cge_resfinder__unspecified__unspecified
+name: &name cge_resfinder__2.1.0__200811
 version:
   schema: 2.0
-  code: unspecified
-  resource: unspecified
+  code: 2.1.0
+  resource: 200811
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ category: [resistance]
 #-Install-------------------------------------------------------------------------------------------
 install:
   path: # Set by install program
-  dockerfile: docker://ssidk/bifrost_cge_resfinder:unspecified__unspecified
+  dockerfile: docker://ssidk/bifrost_cge_resfinder
 #---------------------------------------------------------------------------------------------------
 
 #-Options-------------------------------------------------------------------------------------------
