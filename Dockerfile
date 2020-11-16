@@ -73,7 +73,7 @@ WORKDIR /${NAME}/resources
 RUN \
     git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
     cd resfinder_db && \ 
-    git checkout 147c602 && \
+    git checkout 3bfc4a3 && \
     python3 INSTALL.py kma_index;
 #- Additional resources (files/DBs): end -----------------------------------------------------------
 
