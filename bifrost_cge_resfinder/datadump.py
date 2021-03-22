@@ -1,37 +1,50 @@
-from bifrostlib import datahandling
+from bifrostlib import common
+from bifrostlib.datahandling import Sample
+from bifrostlib.datahandling import SampleComponentReference
+from bifrostlib.datahandling import SampleComponent
+from bifrostlib.datahandling import Category
+from typing import Dict
+import os
 
 
-def extract_cge_resfinder_data(sampleComponentObj):
-    summary, results, file_path, key = sampleComponentObj.start_data_extraction("data_resfinder.json")
-    results[key] = datahandling.load_yaml(file_path)
-    return (summary, results)
+def extract_resistance(resistance: Category, results: Dict, component_name: str) -> None:
+    file_name = "resfinder_results/pheno_table.txt"
+    file_key = common.json_key_cleaner(file_name)
+    file_path = os.path.join(component_name, file_name)
+    with open(file_path) as input:
+        lines = input.readlines()
+    results[file_key]={}
+    for line in lines:
+        if not line.startswith('#') and len(line.strip()) > 0:
+            line = line.split()
+            resistance['summary']['genes'].append({
+                'name':line[0],
+                'phenotype':line[2]
+            })
+    results[file_key]['genes'] = resistance['summary']['genes']
 
 
-def convert_summary_for_reporter(sampleComponentObj):
-    summary, results, file_path, key = sampleComponentObj.start_data_extraction()
-    key = sampleComponentObj.get_file_location_key("data_resfinder.json")
-    data = []
-    resfinder_dict = results[key]["resfinder"]["results"]
-    for anti_biotic_class in resfinder_dict:
-        for subclass in resfinder_dict[anti_biotic_class]:
-            if resfinder_dict[anti_biotic_class][subclass] != "No hit found":
-                gene_dict = resfinder_dict[anti_biotic_class][subclass]
-                for gene in gene_dict:
-                    data.append({
-                        "resistance_gene": gene_dict[gene]["resistance_gene"],
-                        "coverage": gene_dict[gene]["coverage"],
-                        "identity": gene_dict[gene]["identity"],
-                        "anti_biotic_class": anti_biotic_class,
-                        "predicted_phenotype": gene_dict[gene]["predicted_phenotype"]
-                    })
-    return data
-
-
-def datadump(sampleComponentObj, log):
-    sampleComponentObj.start_data_dump(log=log)
-    sampleComponentObj.run_data_dump_on_function(extract_cge_resfinder_data, log=log)
-    sampleComponentObj.end_data_dump(generate_report_function=convert_summary_for_reporter, log=log)
+def datadump(samplecomponent_ref_json: Dict):
+    samplecomponent_ref = SampleComponentReference(value=samplecomponent_ref_json)
+    samplecomponent = SampleComponent.load(samplecomponent_ref)
+    sample = Sample.load(samplecomponent.sample)
+    resistance= samplecomponent.get_category("resistance")
+    if resistance is None:
+        resistance = Category(value={
+                "name": "resistance",
+                "component": {"id": samplecomponent["component"]["_id"], "name": samplecomponent["component"]["name"]},
+                "summary": {"genes":[]},
+                "report": {}
+            }
+        )
+    extract_resistance(resistance, samplecomponent["results"], samplecomponent["component"]["name"])
+    samplecomponent.set_category(resistance)
+    sample.set_category(resistance)
+    common.set_status_and_save(sample, samplecomponent, "Success")
+    
+    with open(os.path.join(samplecomponent["component"]["name"], "datadump_complete"), "w+") as fh:
+        fh.write("done")
 
 datadump(
-    snakemake.params.sampleComponentObj,
-    snakemake.log)
+    snakemake.params.samplecomponent_ref_json,
+)
