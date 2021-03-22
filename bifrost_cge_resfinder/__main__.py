@@ -2,4 +2,4 @@
 from bifrost_cge_resfinder import launcher
 
 if __name__ == '__main__':
-    launcher.run()
+    launcher.main()

@@ -1,15 +1,14 @@
 #-Basic info----------------------------------------------------------------------------------------
 display_name: cge_resfinder
-name: &name cge_resfinder__2.1.1__201116
+name: cge_resfinder__v3
 version:
-  schema: 2.0
-  code: 2.1.1
-  resource: 201116
+  schema: ["v2_1_0"]
+  code: v3
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
 details:
-  target: sample
+  target: [sample]
   description: >
     This preforms read based mapping against the resfinder DB's. The options show the species entries 
     which will be attempted for mlst with key originating from the species DB. This is done against 
@@ -32,13 +31,14 @@ options:
 
 #-Required resource files---------------------------------------------------------------------------
 resources:
-  database_path: "/bifrost_cge_resfinder/resources/resfinder_db"
+  #adapters_fasta: "/bifrost/components/bifrost_min_read_check/resources/adapters.fasta"
+  resfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/resfinder_db"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------
 requirements:
   sample:
-    properties:
+    categories:
       paired_reads:
         summary:
           data:
@@ -48,25 +48,17 @@ requirements:
 db_values_changes:
   files: []
   sample:
-    properties:
+    categories:
       resistance:
         summary:  # see sample_component summary
         component:
           _id: 
           date:  # ObjectId
     report:
-      resistance:
-        title: "Resistance"
-        info: *name
-        columns: 
-          - {id: "resistance_gene", name: "gene"}
-          - {id: "coverage", name: "%cov"}
-          - {id: "identity", name: "%id"}
-          - {id: "anti_biotic_class", name: "anti-biotic class"}
-          - {id: "predicted_phenotype", name: "pred. phenotype"}
-        data: []
   sample_component:
     summary:
+      genes: # array
     results:
-      cge_resfinder/data_resfinder_json: {}
+      cge_resfinder/data_yaml: {}
+
 #---------------------------------------------------------------------------------------------------

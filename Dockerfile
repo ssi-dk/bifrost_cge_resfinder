@@ -1,79 +1,94 @@
-# This is intended to run in Github Actions
-# Arg can be set to dev for testing purposes
+# This is intended to run in Local Development (dev) and Github Actions (test/prod)
+# BUILD_ENV options (dev, test, prod) dev for local testing and test for github actions testing on prod ready code
 ARG BUILD_ENV="prod"
-ARG MAINTAINER="kimn@ssi.dk"
-ARG NAME="bifrost_cge_resfinder"
+ARG MAINTAINER="kimn@ssi.dk;"
+ARG BIFROST_COMPONENT_NAME="bifrost_cge_resfinder"
+ARG FORCE_DOWNLOAD=true
 
-# For dev build include testing modules via pytest done on github and in development.
-# Watchdog is included for docker development (intended method) and should preform auto testing 
-# while working on *.py files
-#
-# Test data is in bifrost_run_launcher:dev
-#- Source code (development):start------------------------------------------------------------------
-FROM ssidk/bifrost_run_launcher:dev as build_dev
-ONBUILD ARG NAME
-ONBUILD COPY . /${NAME}
-ONBUILD WORKDIR /${NAME}
-ONBUILD RUN \
-    pip install yq; \
-    yq -Y -i '.version.code |= "dev"' ${NAME}/config.yaml; \
-    pip install -r requirements.dev.txt;
-#- Source code (development):end--------------------------------------------------------------------
-
-#- Source code (productopm):start-------------------------------------------------------------------
-FROM continuumio/miniconda3:4.7.10 as build_prod
-ONBUILD ARG NAME
-ONBUILD WORKDIR ${NAME}
-ONBUILD COPY ${NAME} ${NAME}
-# ONBUILD COPY resources resources
-ONBUILD COPY setup.py setup.py
-ONBUILD COPY requirements.txt requirements.txt
-ONBUILD RUN \
-    pip install -r requirements.txt
-#- Source code (productopm):end---------------------------------------------------------------------
-
-#- Use development or production to and add info: start---------------------------------------------
-FROM build_${BUILD_ENV}
-ARG NAME
-LABEL \
-    name=${NAME} \
-    description="Docker environment for ${NAME}" \
+#---------------------------------------------------------------------------------------------------
+# Programs for all environments
+#---------------------------------------------------------------------------------------------------
+FROM continuumio/miniconda3:4.8.2 as build_base
+ONBUILD ARG BIFROST_COMPONENT_NAME
+ONBUILD ARG BUILD_ENV
+ONBUILD ARG MAINTAINER
+ONBUILD LABEL \
+    BIFROST_COMPONENT_NAME=${BIFROST_COMPONENT_NAME} \
+    description="Docker environment for ${BIFROST_COMPONENT_NAME}" \
     environment="${BUILD_ENV}" \
     maintainer="${MAINTAINER}"
-#- Use development or production to and add info: end---------------------------------------------
-
-#- Tools to install:start---------------------------------------------------------------------------
-RUN \
+ONBUILD RUN \
     conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==5.7.1; \
+    conda install -yq -c conda-forge -c bioconda -c default bbmap==38.58; 
+
+
+#---------------------------------------------------------------------------------------------------
+# Base for dev environement
+#---------------------------------------------------------------------------------------------------
+FROM build_base as build_dev
+ONBUILD ARG BIFROST_COMPONENT_NAME
+ONBUILD COPY /components/${BIFROST_COMPONENT_NAME} /bifrost/components/${BIFROST_COMPONENT_NAME}
+ONBUILD COPY /lib/bifrostlib /bifrost/lib/bifrostlib
+ONBUILD WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/
+ONBUILD RUN \
+    pip install -r requirements.txt; \
+    pip install --no-cache -e file:///bifrost/lib/bifrostlib; \
+    pip install --no-cache -e file:///bifrost/components/${BIFROST_COMPONENT_NAME}/
+
+#---------------------------------------------------------------------------------------------------
+# Base for production environment
+#---------------------------------------------------------------------------------------------------
+FROM build_base as build_prod
+ONBUILD ARG BIFROST_COMPONENT_NAME
+ONBUILD WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
+ONBUILD COPY ./ ./
+ONBUILD RUN \
+    pip install -e file:///bifrost/components/${BIFROST_COMPONENT_NAME}/
+
+#---------------------------------------------------------------------------------------------------
+# Base for test environment (prod with tests)
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+FROM build_base as build_test
+ONBUILD ARG BIFROST_COMPONENT_NAME
+ONBUILD WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
+ONBUILD COPY ./ ./
+ONBUILD RUN \
+    pip install -r requirements.txt \
+    pip install -e file:///bifrost/components/${BIFROST_COMPONENT_NAME}/
+
+
+
+#---------------------------------------------------------------------------------------------------
+# Additional resources
+#---------------------------------------------------------------------------------------------------
+FROM build_${BUILD_ENV}
+ARG BIFROST_COMPONENT_NAME
+WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
+RUN \
     # For 'make' needed for kma
     apt-get update &&  apt-get install -y -qq --fix-missing \
         build-essential \
         zlib1g-dev; \
     pip install -q \
-        cgecore==1.5.0 \
+        cgecore==1.5.6 \
         tabulate==0.8.3 \
-        biopython==1.74;
-# KMA
-WORKDIR /${NAME}/resources
-RUN \
-    git clone --branch 1.3.3 https://bitbucket.org/genomicepidemiology/kma.git && \
-    cd kma && \
-    make;
-ENV PATH /${NAME}/resources/kma:$PATH
+        biopython==1.74 \
+        python-dateutil==2.8.1; \
+    git clone --branch 1.3.13 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
+ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/kma:$PATH
+
 # Resfinder
-WORKDIR /${NAME}/resources
+WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
 RUN \
     git clone --branch 4.0 https://bitbucket.org/genomicepidemiology/resfinder.git
-ENV PATH /${NAME}/resources/resfinder:$PATH
-#- Tools to install:end ----------------------------------------------------------------------------
+ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/resfinder:$PATH
 
-#- Additional resources (files/DBs): start ---------------------------------------------------------
-# Resfinder DB from 2020/08/11
-WORKDIR /${NAME}/resources
+#install resfinder db
+WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
 RUN \
     git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
     cd resfinder_db && \ 
-    git checkout 3bfc4a3 && \
     python3 INSTALL.py kma_index;
 #- Additional resources (files/DBs): end -----------------------------------------------------------
 
