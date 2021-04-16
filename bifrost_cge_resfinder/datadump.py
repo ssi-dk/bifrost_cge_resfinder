@@ -5,22 +5,29 @@ from bifrostlib.datahandling import SampleComponent
 from bifrostlib.datahandling import Category
 from typing import Dict
 import os
-
+import json
 
 def extract_resistance(resistance: Category, results: Dict, component_name: str) -> None:
-    file_name = "resfinder_results/pheno_table.txt"
+    file_name = "resfinder_results/std_format_under_development.json"
     file_key = common.json_key_cleaner(file_name)
     file_path = os.path.join(component_name, file_name)
     with open(file_path) as input:
-        lines = input.readlines()
+        results_json = json.load(input)
     results[file_key]={}
-    for line in lines:
-        if not line.startswith('#') and len(line.strip()) > 0:
-            line = line.split()
-            resistance['summary']['genes'].append({
-                'name':line[0],
-                'phenotype':line[2]
-            })
+    for gene in results_json['genes'].keys():
+        gene_obj = results_json['genes'][gene]
+        gene_dict={}
+        gene_dict['gene'] = gene_obj['name']
+        gene_dict['phenotype'] = ", ".join(gene_obj['phenotypes'])
+        gene_dict['point mutation'] = None # todo
+        resistance['summary']['genes'].append(gene_dict)
+        report_dict = {}
+        report_dict['gene'] = gene_obj['name']
+        report_dict['coverage'] = gene_obj['coverage']
+        report_dict['identity'] = gene_obj['identity']
+        report_dict['variants'] = None # todo
+        #print(resistance['summary'])
+        resistance['report']['data'].append(report_dict)
     results[file_key]['genes'] = resistance['summary']['genes']
 
 
@@ -34,7 +41,7 @@ def datadump(samplecomponent_ref_json: Dict):
                 "name": "resistance",
                 "component": {"id": samplecomponent["component"]["_id"], "name": samplecomponent["component"]["name"]},
                 "summary": {"genes":[]},
-                "report": {}
+                "report": {"data":[]}
             }
         )
     extract_resistance(resistance, samplecomponent["results"], samplecomponent["component"]["name"])
