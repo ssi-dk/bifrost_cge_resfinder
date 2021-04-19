@@ -21,7 +21,8 @@ def test_connection():
     assert "TEST" in os.environ['BIFROST_DB_KEY'].upper()  # A very basic piece of protection ensuring the word test is in the DB
 
 class TestBifrostCGEResfinder:
-    component_name = "cge_resfinder__v3"
+    component_name = "cge_resfinder__v2_2_1"
+    component_name = component_name + "__d98c13b"
     current_dir = os.getcwd()
     test_dir = "/bifrost/test_data/output/test__cge_resfinder/"
     json_entries = [
