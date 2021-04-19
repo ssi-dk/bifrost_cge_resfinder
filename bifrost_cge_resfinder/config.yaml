@@ -55,22 +55,6 @@ db_values_changes:
           _id: 
           date:  # ObjectId
     report:
-  sample_component:
-    summary:
-      genes: # array
-    results:
-      cge_resfinder/data_yaml: {}
-
-db_values_changes:
-  files: []
-  sample:
-    categories:
-      mlst:
-        summary:  # see sample_component summary
-        component:
-          _id: 
-          date:  # ObjectId
-    report:
       resistance:
         title: "Resistance"
         info: *name
@@ -84,6 +68,6 @@ db_values_changes:
     summary:
       genes: 
     results:
-      cge_mlst/data_yaml: {}
+      cge_resfinder/data_yaml: {}
 
 #---------------------------------------------------------------------------------------------------
