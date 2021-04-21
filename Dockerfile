@@ -88,7 +88,8 @@ ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/resfinder:$PATH
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
 RUN \
     git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
-    cd resfinder_db && \ 
+    cd resfinder_db && \
+    git checkout d98c13b && \ 
     python3 INSTALL.py kma_index;
 #- Additional resources (files/DBs): end -----------------------------------------------------------
 

@@ -2,15 +2,23 @@ from setuptools import setup, find_packages
 
 setup(
     name='bifrost_cge_resfinder',
-    version='v3',
-    description='Datahandling functions for bifrost (later to be API interface)',
+    version='v2_2_1',
     url='https://github.com/ssi-dk/bifrost_cge_resfinder',
-    author="Kim Ng, Martin Basterrechea",
-    author_email="kimn@ssi.dk",
+
+    # Author details
+    author='Kim Ng',
+    author_email='kimn@ssi.dk',
+
+    # Choose your license
+    license='MIT',
+
     packages=find_packages(),
+    python_requires='>=3.6',
+
+    package_data={'bifrost_cge_resfinder': ['config.yaml', 'pipeline.smk']},
+    include_package_data=True,
+
     install_requires=[
-        'bifrostlib >= 2.1.9',
-    ],
-    package_data={"bifrost_cge_resfinder": ['config.yaml']},
-    include_package_data=True
+        'bifrostlib >= 2.0.11'
+    ]
 )

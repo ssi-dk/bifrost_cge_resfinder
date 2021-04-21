@@ -1,9 +1,9 @@
 #-Basic info----------------------------------------------------------------------------------------
 display_name: cge_resfinder
-name: cge_resfinder__v3
+name: &name cge_resfinder__v2_2_1__d98c13b
 version:
   schema: ["v2_1_0"]
-  code: v3
+  code: v2_2_1
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
@@ -55,9 +55,18 @@ db_values_changes:
           _id: 
           date:  # ObjectId
     report:
+      resistance:
+        title: "Resistance"
+        info: *name
+        columns: 
+          - {id: "gene", name: "gene"}
+          - {id: "coverage", name: "%cov"}
+          - {id: "identity", name: "%id"}
+          - {id: "variants", name: "# of variants"}
+        data: []
   sample_component:
     summary:
-      genes: # array
+      genes: 
     results:
       cge_resfinder/data_yaml: {}
 
