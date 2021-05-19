@@ -14,19 +14,38 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
     with open(file_path) as input:
         results_json = json.load(input)
     results[file_key]={}
+    # first gather everything that has a phenotype
+    items_with_phenotypes = {}
     for gene in results_json['genes'].keys():
-        gene_obj = results_json['genes'][gene]
-        gene_dict={}
+        if len(results_json['genes'][gene]['phenotypes']) > 0:
+            items_with_phenotypes[gene] = results_json['genes'][gene]
+    for gene_variant in results_json['seq_variations'].keys():
+        if len(results_json['seq_variations'][gene_variant]['phenotypes']) > 0:
+            gene_names = results_json['seq_variations'][gene_variant]['genes']
+            for i in gene_names:
+                var_phenotypes = results_json['seq_variations'][gene_variant]['phenotypes']
+                var_var = results_json['seq_variations'][gene_variant]['seq_var']
+                gene_items = results_json['genes'][i]
+                gene_items['phenotypes'] = var_phenotypes
+                gene_items['seq_var'] = var_var
+                items_with_phenotypes[i] = gene_items
+    #for i in items_with_phenotypes.keys():
+        #print(items_with_phenotypes[i])
+    for gene in items_with_phenotypes.keys():
+        #print(items_with_phenotypes[gene])
+        gene_obj = items_with_phenotypes[gene]
+        gene_dict = {}
         gene_dict['gene'] = gene_obj['name']
-        gene_dict['phenotype'] = ", ".join(gene_obj['phenotypes'])
-        gene_dict['point mutation'] = None # todo
+        gene_dict['phenotype'] = gene_obj['phenotypes']
+        gene_dict['associated_variants'] = gene_obj.get('seq_var')
+        print(gene_dict)
         resistance['summary']['genes'].append(gene_dict)
+        
         report_dict = {}
         report_dict['gene'] = gene_obj['name']
         report_dict['coverage'] = gene_obj['coverage']
         report_dict['identity'] = gene_obj['identity']
-        report_dict['variants'] = None # todo
-        #print(resistance['summary'])
+        report_dict['associated_variants'] = gene_dict['associated_variants']
         resistance['report']['data'].append(report_dict)
     results[file_key]['genes'] = resistance['summary']['genes']
 

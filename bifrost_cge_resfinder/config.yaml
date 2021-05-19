@@ -28,12 +28,27 @@ install:
 
 #-Options-------------------------------------------------------------------------------------------
 options:
+  resfinder_current_species: {Campylobacter,
+                              Campylobacter jejuni,
+                              Campylobacter coli,
+                              Enterococcus faecalis,
+                              Enterococcus faecium,
+                              Escherichia coli,
+                              Helicobacter pylori,
+                              Klebsiella,
+                              Mycobacterium tuberculosis,
+                              Neisseria gonorrhoeae,
+                              Plasmodium falciparum,
+                              Salmonella,
+                              Salmonella enterica,
+                              Staphylococcus aureus}
 #---------------------------------------------------------------------------------------------------
 
 #-Required resource files---------------------------------------------------------------------------
 resources:
   #adapters_fasta: "/bifrost/components/bifrost_min_read_check/resources/adapters.fasta"
   resfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/resfinder_db"
+  pointfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/pointfinder_db"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------
