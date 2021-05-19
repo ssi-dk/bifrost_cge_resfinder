@@ -92,11 +92,15 @@ rule run_resfinder_on_reads:
     output:
         resfinder_results = directory(f"{component['name']}/resfinder_results")
     params:
-        resfinder_db = component['resources']['resfinder_db']
+        samplecomponent_ref_json = samplecomponent.to_reference().json,
+        resfinder_db = component['resources']['resfinder_db'],
+        pointfinder_db = component['resources']['pointfinder_db']
     #run:
-        #print(params.resfinder_db)
-    shell:
-        "run_resfinder.py -db_res {params.resfinder_db} -acq -k kma -ifq {input.reads[0]} {input.reads[1]} -o {output.resfinder_results}"
+        #print(component['resources'].keys())
+    #shell:
+        #"run_resfinder.py -db_res {params.resfinder_db} -db_point {params.pointfinder_db} -acq -k kma -ifq {input.reads[0]} {input.reads[1]} -o {output.resfinder_results}"
+    script:
+        os.path.join(os.path.dirname(workflow.snakefile), "rule__cge_resfinder.py")
 
 
 #* Dynamic section: end ****************************************************************************
