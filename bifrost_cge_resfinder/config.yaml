@@ -75,14 +75,14 @@ db_values_changes:
         title: "Resistance"
         info: *name
         columns: 
-          - {id: "gene", name: "gene"}
-          - {id: "coverage", name: "%cov"}
-          - {id: "identity", name: "%id"}
-          - {id: "variants", name: "# of variants"}
+          - {id: "phenotype", name: "phenotype"}
+          - {id: "seq_variations", name: "seq_variations"}
+          - {id: "genes", name: "genes"}
+          - {id: "amr_classes", name: "amr_classes"}
         data: []
   sample_component:
     summary:
-      genes: 
+      phenotypes: 
     results:
       cge_resfinder/data_yaml: {}
 

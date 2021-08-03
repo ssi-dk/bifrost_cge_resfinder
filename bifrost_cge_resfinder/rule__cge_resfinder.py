@@ -39,7 +39,12 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
         if species not in component["options"]["resfinder_current_species"]:
             species = "Other"
         species = "\""+species+"\"" # string for input to resfinder
-        run_cmd(f"run_resfinder.py -db_res {resfinder_db} -db_point {pointfinder_db} -acq -c -k kma -ifq {reads[0]} {reads[1]} -o {output_dir} --species {species}", log)
+        if species == '\"Other\"': # this string will be viable input in next resfinder update
+            cmd = f"run_resfinder.py -db_res {resfinder_db} -acq -k kma -ifq {reads[0]} {reads[1]} -o {output_dir}"
+        else:
+            cmd = f"run_resfinder.py -db_res {resfinder_db} -db_point {pointfinder_db} -acq -c -k kma -ifq {reads[0]} {reads[1]} -o {output_dir} --species {species}"
+        print(cmd)
+        run_cmd(cmd, log)
 
 
     except Exception:
