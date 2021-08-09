@@ -34,7 +34,7 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
             report_seq_variations = phenotypes[phenotype]['seq_variations']
             seq_variation_dicts = [{"key":results_json['seq_variations'][i]['key'], 
                                    "seq_var":results_json['seq_variations'][i]['seq_var'],
-                                   "genes": results_json['seq_variations'][i]['genes']} for i in report_seq_variations]
+                                   "genes": seq_variation_gene_object(results_json['seq_variations'][i]['genes'], results_json)} for i in report_seq_variations]
             report_dict["seq_variations"] = seq_variation_dicts
             report_dict['genes'] = []
             for gene_dict in [genes[i] for i in phen_to_gene_map[phenotype]]:
@@ -45,8 +45,14 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
                 report_dict['genes'].append({"key":key, "name":name, "coverage":coverage, "identity":identity})
             report_dict['amr_classes'] = phenotypes[phenotype]['amr_classes']
             resistance['report']['data'].append(report_dict)
-    print(resistance)
-
+    #print(resistance)
+def seq_variation_gene_object(gene_list, resfinder_json):
+    for gene in gene_list:
+        key = resfinder_json['genes'][gene]['key']
+        name = resfinder_json['genes'][gene]['name']
+        coverage = resfinder_json['genes'][gene]['coverage']
+        identity = resfinder_json['genes'][gene]['identity']
+        return {"key":key, "name":name, "coverage":coverage, "identity":identity}
 
 def datadump(samplecomponent_ref_json: Dict):
     samplecomponent_ref = SampleComponentReference(value=samplecomponent_ref_json)
