@@ -16,7 +16,11 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
     results[file_key] = results_json
     phenotypes = results_json['phenotypes']
     genes = results_json['genes']
-    # collect phenotypes for genes
+    dbs = results_json['databases']
+    resistance['databases'] = [{"name":dbs[i]['database_name'], "version":dbs[i]['database_version']} for i in dbs.keys()]
+    # collect phenotypes for genes, note in newer versions of resfinder they seem to have
+    # actually added the relevant fields in the phenotype object in the json, making these steps
+    # below unnecessary and overall much simpler.
     phen_to_gene_map = {phen:[] for phen in phenotypes.keys()}
     for gene in genes.keys():
         gene_phenotype = genes[gene]["phenotypes"]
@@ -28,6 +32,7 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
             phen_dict = {"phenotype":phenotype}
             phen_dict['seq_variations'] = ", ".join(phenotypes[phenotype]['seq_variations'])
             phen_dict['genes'] = ", ".join([genes[i]['name'] for i in phen_to_gene_map[phenotype]])
+            phen_dict['amr_classes'] = ",".join(phenotypes[phenotype]['amr_classes'])
             resistance['summary']['phenotypes'].append(phen_dict)
             # make a report with gene coverage and shit
             report_dict = {"phenotype":phenotype}
@@ -58,15 +63,16 @@ def datadump(samplecomponent_ref_json: Dict):
     samplecomponent_ref = SampleComponentReference(value=samplecomponent_ref_json)
     samplecomponent = SampleComponent.load(samplecomponent_ref)
     sample = Sample.load(samplecomponent.sample)
-    resistance= samplecomponent.get_category("resistance")
-    if resistance is None:
-        resistance = Category(value={
-                "name": "resistance",
-                "component": {"id": samplecomponent["component"]["_id"], "name": samplecomponent["component"]["name"]},
-                "summary": {"phenotypes":[]},
-                "report": {"data":[]}
-            }
-        )
+    resistance = samplecomponent.get_category("resistance")
+    #print(resistance) # it's the appending that's duplicated because resistance is not none
+    #if resistance is None:
+    resistance = Category(value={
+            "name": "resistance",
+            "component": {"id": samplecomponent["component"]["_id"], "name": samplecomponent["component"]["name"]},
+            "summary": {"phenotypes":[]},
+            "report": {"data":[]}
+        }
+    )
     extract_resistance(resistance, samplecomponent["results"], samplecomponent["component"]["name"])
     samplecomponent.set_category(resistance)
     sample.set_category(resistance)

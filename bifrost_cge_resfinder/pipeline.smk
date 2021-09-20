@@ -70,7 +70,7 @@ rule check_requirements:
         samplecomponent
     run:
         if samplecomponent.has_requirements():
-            print('asdf')
+            #print('asdf')
             with open(output.check_file, "w") as fh:
                 fh.write("")
 
