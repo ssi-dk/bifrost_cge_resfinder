@@ -72,16 +72,17 @@ RUN \
         zlib1g-dev; \
     pip install -q \
         cgecore==1.5.6 \
+        cgelib==0.3.0 \
         tabulate==0.8.3 \
         biopython==1.74 \
         python-dateutil==2.8.1; \
-    git clone --branch 1.3.13 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
+    git clone --branch 1.3.23 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/kma:$PATH
 
 # Resfinder
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
 RUN \
-    git clone --branch 4.1.4 https://bitbucket.org/genomicepidemiology/resfinder.git
+    git clone --branch dev4.2 https://bitbucket.org/genomicepidemiology/resfinder.git
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/resfinder:$PATH
 
 #install resfinder db
@@ -89,7 +90,7 @@ WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
 RUN \
     git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
     cd resfinder_db && \
-    git checkout 6d00142 && \ 
+    git checkout e14da67 && \ 
     python3 INSTALL.py kma_index;
 
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
