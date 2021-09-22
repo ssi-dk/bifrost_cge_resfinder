@@ -6,6 +6,7 @@ from bifrostlib.datahandling import Category
 from typing import Dict
 import os
 import json
+import re
 
 def extract_resistance(resistance: Category, results: Dict, component_name: str) -> None:
     file_name = "resfinder_results/std_format_under_development.json"
@@ -75,12 +76,26 @@ def datadump(samplecomponent_ref_json: Dict):
     )
     extract_resistance(resistance, samplecomponent["results"], samplecomponent["component"]["name"])
     samplecomponent.set_category(resistance)
-    sample.set_category(resistance)
+    sample_category = sample.get_category("resistance")
+    if sample_category == None:
+        sample.set_category(resistance)
+    else:
+        current_category_version = extract_digits_from_component_version(resistance['component']['name'])
+        sample_category_version = extract_digits_from_component_version(sample_category['component']['name'])
+        print(current_category_version, sample_category_version)
+        if current_category_version > sample_category_version:
+            sample.set_category(resistance)
     common.set_status_and_save(sample, samplecomponent, "Success")
     
     with open(os.path.join(samplecomponent["component"]["name"], "datadump_complete"), "w+") as fh:
         fh.write("done")
 
+
+def extract_digits_from_component_version(component_str):
+    version_re = re.compile(".*__(v.*)__.*")
+    version_group = re.match(version_re, component_str).groups()[0]
+    version_digits = int("".join([i for i in version_group if i.isdigit()]))
+    return version_digits
 datadump(
     snakemake.params.samplecomponent_ref_json,
 )
