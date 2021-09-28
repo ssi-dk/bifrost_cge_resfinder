@@ -11,9 +11,8 @@ version:
 details:
   target: [sample]
   description: >
-    This preforms read based mapping against the resfinder DB's. The options show the species entries 
-    which will be attempted for mlst with key originating from the species DB. This is done against 
-    the cge_db using kma mode. 
+    This performs read based mapping against the resfinder and pointfinder DBs. The options show the species entries 
+    which will be used for pointfinder. This is done against using kma mode. 
 #---------------------------------------------------------------------------------------------------
 
 #-Category info-------------------------------------------------------------------------------------
