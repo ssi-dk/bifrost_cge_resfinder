@@ -83,7 +83,7 @@ def datadump(samplecomponent_ref_json: Dict):
         current_category_version = extract_digits_from_component_version(resistance['component']['name'])
         sample_category_version = extract_digits_from_component_version(sample_category['component']['name'])
         print(current_category_version, sample_category_version)
-        if current_category_version > sample_category_version:
+        if current_category_version >= sample_category_version:
             sample.set_category(resistance)
     common.set_status_and_save(sample, samplecomponent, "Success")
     

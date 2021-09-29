@@ -8,7 +8,7 @@ ARG FORCE_DOWNLOAD=true
 #---------------------------------------------------------------------------------------------------
 # Programs for all environments
 #---------------------------------------------------------------------------------------------------
-FROM continuumio/miniconda3:4.8.2 as build_base
+FROM continuumio/miniconda3:4.10.3 as build_base
 ONBUILD ARG BIFROST_COMPONENT_NAME
 ONBUILD ARG BUILD_ENV
 ONBUILD ARG MAINTAINER
@@ -67,15 +67,17 @@ ARG BIFROST_COMPONENT_NAME
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
 RUN \
     # For 'make' needed for kma
-    apt-get update &&  apt-get install -y -qq --fix-missing \
+    apt-get update &&  apt-get install -y -q --fix-missing \
         build-essential \
-        zlib1g-dev; \
+        zlib1g-dev \
+        libmagic-dev; \
     pip install -q \
         cgecore==1.5.6 \
         cgelib==0.3.0 \
         tabulate==0.8.3 \
         biopython==1.74 \
         python-dateutil==2.8.1; \
+    ls /usr/bin/make; \
     git clone --branch 1.3.23 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/kma:$PATH
 
