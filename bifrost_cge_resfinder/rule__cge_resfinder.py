@@ -38,7 +38,7 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
             species = None # in case the category doesnt exist
         if species not in component["options"]["resfinder_current_species"]:
             species = "Other"
-        species = "\""+species+"\"" # string for input to resfinder
+        species = "\""+species+"\"" # species string must have quotation marks when input to a shell cmd
         if species == '\"Other\"': # this string will be viable input in next resfinder update
             cmd = f"run_resfinder.py -db_res {resfinder_db} -acq -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir}"
         else:

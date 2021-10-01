@@ -70,7 +70,9 @@ RUN \
     apt-get update &&  apt-get install -y -q --fix-missing \
         build-essential \
         zlib1g-dev \
-        libmagic-dev; \
+        libmagic-dev \
+        nano \
+        less; \
     pip install -q \
         cgecore==1.5.6 \
         cgelib==0.3.0 \
