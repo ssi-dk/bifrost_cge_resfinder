@@ -28,7 +28,7 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
             seq_region_keys = phenotype['seq_regions']
             seq_variation_keys = phenotype['seq_variations']
             summary_dict = {
-                "phenotype":phenotype_key,
+                "name":phenotype_key,
                 "seq_regions": ",".join([seq_regions[i]['name'] for i in seq_region_keys]),
                 "seq_variations": ",".join([seq_variations[i]['name'] for i in seq_variation_keys]),
                 "amr_classes" : ",".join(amr_classes)
@@ -36,9 +36,9 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
             resistance['summary']['phenotypes'].append(summary_dict)
 
             report_dict = {
-                "phenotype":phenotype_key,
-                "amr_classes":amr_classes,
-                "seq_regions":[]
+                "name":phenotype_key,
+                "amr_classes":",".join(amr_classes),
+                "seq_regions/variations":[]
             }
             for seq_region in seq_region_keys:
                 seq_region_dict = {
@@ -48,7 +48,7 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
                     "type":seq_regions[seq_region]['type'],
                     "seq_var":""
                 }
-                report_dict['seq_regions'].append(seq_region_dict)
+                report_dict['seq_regions/variations'].append(seq_region_dict)
             for seq_variation in seq_variation_keys:
                 seq_regions_variant = seq_variations[seq_variation]['seq_regions']
                 for seq_region in seq_regions_variant:
@@ -59,7 +59,7 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str)
                         "type":seq_regions[seq_region]['type'],
                         "seq_var":seq_variations[seq_variation]['seq_var']
                     }
-                    report_dict['seq_regions'].append(seq_region_dict)
+                    report_dict['seq_regions/variations'].append(seq_region_dict)
             resistance['report']['data'].append(report_dict)
 
 def seq_variation_gene_object(gene_list, resfinder_json):
