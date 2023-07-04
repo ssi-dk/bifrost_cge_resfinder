@@ -24,6 +24,7 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
         samplecomponent_ref = SampleComponentReference(value=samplecomponent_ref_json)
         samplecomponent = SampleComponent.load(samplecomponent_ref)
         sample = Sample.load(samplecomponent.sample)
+        sample_name = sample['name']
         component = Component.load(samplecomponent.component)
 
         # Variables being used
@@ -33,17 +34,19 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
         pointfinder_db = params.pointfinder_db
         output_dir = output.resfinder_results
         if species_detection != None:
-            species = species_detection["summary"].get("species", None) # currently, provided species will take priority over detected species
+            species = species_detection["summary"].get("species", "species_not_in_db") # currently, provided species will take priority over detected species
         else:
-            species = None # in case the category doesnt exist
-        if species not in component["options"]["resfinder_current_species"]:
-            species = "Other"
-        species = "\""+species+"\"" # string for input to resfinder
-        if species == '\"Other\"': # this string will be viable input in next resfinder update
-            cmd = f"run_resfinder.py -db_res {resfinder_db} -acq -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir}"
-        else:
-            cmd = f"run_resfinder.py -db_res {resfinder_db} -db_point {pointfinder_db} -acq -c -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir} --species {species}"
-        #print(cmd)
+            sample_info = sample.get_category('sample_info')
+            species = sample_info['summary']['provided_species']
+            #species = None # in case the category doesnt exist
+        #if species not in component["options"]["resfinder_current_species"]:
+            #species = "Other"
+        species = "\""+species+"\"" # species string must have quotation marks when input to a shell cmd
+        #if species == '\"Other\"': # this string will be viable input in next resfinder update
+            #cmd = f"run_resfinder.py -db_res {resfinder_db} -acq -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir}"
+        #else:
+        cmd = f"python -m resfinder -db_res {resfinder_db} -db_point {pointfinder_db} -acq --point -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir} -s {species} -j {output_dir}/{sample_name}.json --ignore_missing_species"
+        print(cmd)
         run_cmd(cmd, log)
 
 

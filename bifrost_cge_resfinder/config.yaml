@@ -75,14 +75,13 @@ db_values_changes:
         info: *name
         columns: 
           - {id: "phenotype", name: "phenotype"}
-          - {id: "seq_variations", name: "seq_variations"}
-          - {id: "genes", name: "genes"}
+          - {id: "seq_regions", name: "seq_regions"}
           - {id: "amr_classes", name: "amr_classes"}
         data: []
   sample_component:
     summary:
       phenotypes: 
     results:
-      cge_resfinder/data_yaml: {}
+      cge_resfinder/resfinder_results/std_format.json: {}
 
 #---------------------------------------------------------------------------------------------------
