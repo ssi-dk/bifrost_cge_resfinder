@@ -18,8 +18,8 @@ ONBUILD LABEL \
     environment="${BUILD_ENV}" \
     maintainer="${MAINTAINER}"
 ONBUILD RUN \
-    conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==5.7.1; \
-    conda install -yq -c conda-forge -c bioconda -c default bbmap==38.58; 
+    conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==7.30.1; \
+    conda install -yq -c conda-forge -c bioconda -c default bbmap==39.01; 
 
 
 #---------------------------------------------------------------------------------------------------
@@ -75,33 +75,33 @@ RUN \
         less; \
     pip install -q \
         cgecore==1.5.6 \
-        cgelib==0.3.0 \
-        tabulate==0.8.3 \
-        biopython==1.74 \
-        python-dateutil==2.8.1; \
+        cgelib==0.7.3 \
+        tabulate==0.9.0 \
+        biopython==1.81 \
+        gitpython==3.1.31 \
+        python-dateutil==2.8.2; \
     ls /usr/bin/make; \
-    git clone --branch 1.3.23 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
+    git clone --branch 1.4.12 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/kma:$PATH
 
 # Resfinder
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
 RUN \
-    git clone --branch dev4.2 https://bitbucket.org/genomicepidemiology/resfinder.git
+    git clone --branch 4.3.2 https://bitbucket.org/genomicepidemiology/resfinder.git && \
+    pip install resfinder;
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/resfinder:$PATH
 
 #install resfinder db
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
 RUN \
-    git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
+    git clone --branch resfinder-4.3.2 https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
     cd resfinder_db && \
-    git checkout e14da67 && \ 
     python3 INSTALL.py kma_index;
 
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
 RUN \
-    git clone https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git && \
+    git clone --branch resfinder-4.3.2 https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git && \
     cd pointfinder_db && \
-    git checkout 7f6b95c && \ 
     python3 INSTALL.py kma_index;
 #- Additional resources (files/DBs): end -----------------------------------------------------------
 

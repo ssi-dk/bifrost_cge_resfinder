@@ -5,3 +5,4 @@ coverage
 pyyaml
 argh
 watchdog
+jsonschema==v4.18.0a10
