@@ -22,7 +22,7 @@ def test_connection():
 
 class TestBifrostCGEResfinder:
     component_name = "cge_resfinder__v2_2_3"
-    component_name = component_name + "__d98c13b"
+    #component_name = component_name + "__d98c13b"
     current_dir = os.getcwd()
     test_dir = "/bifrost/test_data/output/test__cge_resfinder/"
     json_entries = [
@@ -35,6 +35,11 @@ class TestBifrostCGEResfinder:
                     "summary": {
                         "data": ["/bifrost/test_data/samples/S1_R1.fastq.gz",
                                  "/bifrost/test_data/samples/S1_R2.fastq.gz"]
+                    }
+                },
+                "species_detection": {
+                    "summary": {
+                        "species": "Staphylococcus aureus"
                     }
                 }
             }

@@ -1,10 +1,9 @@
 #-Basic info----------------------------------------------------------------------------------------
 display_name: cge_resfinder
-name: &name cge_resfinder__v2_2_3__d98c13b
+name: cge_resfinder__v2_2_3
 version:
   schema: ["v2_1_0"]
   code: v2_2_3
-  resource: "d98c13b"
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
@@ -48,6 +47,7 @@ resources:
   #adapters_fasta: "/bifrost/components/bifrost_min_read_check/resources/adapters.fasta"
   resfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/resfinder_db"
   pointfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/pointfinder_db"
+  disinfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/disinfinder_db"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------

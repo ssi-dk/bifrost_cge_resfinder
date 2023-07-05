@@ -94,7 +94,8 @@ rule run_resfinder_on_reads:
     params:
         samplecomponent_ref_json = samplecomponent.to_reference().json,
         resfinder_db = component['resources']['resfinder_db'],
-        pointfinder_db = component['resources']['pointfinder_db']
+        pointfinder_db = component['resources']['pointfinder_db'],
+        disinfinder_db = component['resources']['disinfinder_db']
     #run:
         #print(component['resources'].keys())
     #shell:

@@ -32,12 +32,14 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
         reads = input.reads
         resfinder_db = params.resfinder_db
         pointfinder_db = params.pointfinder_db
+        disinfinder_db = params.disinfinder_db
         output_dir = output.resfinder_results
+        print(species_detection)
         if species_detection != None:
             species = species_detection["summary"].get("species", "species_not_in_db") # currently, provided species will take priority over detected species
         else:
             sample_info = sample.get_category('sample_info')
-            species = sample_info['summary']['provided_species']
+            species = sample_info['summary'].get('provided_species')
             #species = None # in case the category doesnt exist
         #if species not in component["options"]["resfinder_current_species"]:
             #species = "Other"
@@ -45,7 +47,8 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
         #if species == '\"Other\"': # this string will be viable input in next resfinder update
             #cmd = f"run_resfinder.py -db_res {resfinder_db} -acq -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir}"
         #else:
-        cmd = f"python -m resfinder -db_res {resfinder_db} -db_point {pointfinder_db} -acq --point -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir} -s {species} -j {output_dir}/{sample_name}.json --ignore_missing_species"
+        kma_path = '/bifrost/components/bifrost_cge_resfinder/kma/kma'
+        cmd = f"python -m resfinder -db_res {resfinder_db} -db_point {pointfinder_db} -db_disinf {disinfinder_db} -acq --point -d -k {kma_path} -ifq {reads[0]} {reads[1]} -o {output_dir} -s {species} -j {output_dir}/{sample_name}.json --ignore_missing_species"
         print(cmd)
         run_cmd(cmd, log)
 
