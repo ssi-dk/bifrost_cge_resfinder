@@ -72,7 +72,6 @@ db_values_changes:
     report:
       resistance:
         title: "Resistance"
-        info: *name
         columns: 
           - {id: "phenotype", name: "phenotype"}
           - {id: "seq_regions", name: "seq_regions"}
