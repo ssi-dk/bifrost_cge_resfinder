@@ -71,7 +71,7 @@ then
   echo "conda-forge channel is already added"
 else
   conda config --add channels conda-forge
-  echo "bioconda channel was added, you can remove it after installation with command"
+  echo "conda-forge channel was added, you can remove it after installation with command"
   echo "conda config --remove channels conda-forge"
 fi
 
