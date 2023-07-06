@@ -1,19 +1,17 @@
 #-Basic info----------------------------------------------------------------------------------------
 display_name: cge_resfinder
-name: &name cge_resfinder__v2_2_3__d98c13b
+name: cge_resfinder__v2.3.0
 version:
   schema: ["v2_1_0"]
-  code: v2_2_3
-  resource: "d98c13b"
+  code: v2.3.0
 #---------------------------------------------------------------------------------------------------
 
 #-Details-------------------------------------------------------------------------------------------
 details:
   target: [sample]
   description: >
-    This preforms read based mapping against the resfinder DB's. The options show the species entries 
-    which will be attempted for mlst with key originating from the species DB. This is done against 
-    the cge_db using kma mode. 
+    This performs read based mapping against the resfinder and pointfinder DBs. The options show the species entries 
+    which will be used for pointfinder. This is done against using kma mode. 
 #---------------------------------------------------------------------------------------------------
 
 #-Category info-------------------------------------------------------------------------------------
@@ -28,12 +26,28 @@ install:
 
 #-Options-------------------------------------------------------------------------------------------
 options:
+  resfinder_current_species: {Campylobacter,
+                              Campylobacter jejuni,
+                              Campylobacter coli,
+                              Enterococcus faecalis,
+                              Enterococcus faecium,
+                              Escherichia coli,
+                              Helicobacter pylori,
+                              Klebsiella,
+                              Mycobacterium tuberculosis,
+                              Neisseria gonorrhoeae,
+                              Plasmodium falciparum,
+                              Salmonella,
+                              Salmonella enterica,
+                              Staphylococcus aureus}
 #---------------------------------------------------------------------------------------------------
 
 #-Required resource files---------------------------------------------------------------------------
 resources:
   #adapters_fasta: "/bifrost/components/bifrost_min_read_check/resources/adapters.fasta"
   resfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/resfinder_db"
+  pointfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/pointfinder_db"
+  disinfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/disinfinder_db"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------
@@ -58,17 +72,15 @@ db_values_changes:
     report:
       resistance:
         title: "Resistance"
-        info: *name
         columns: 
-          - {id: "gene", name: "gene"}
-          - {id: "coverage", name: "%cov"}
-          - {id: "identity", name: "%id"}
-          - {id: "variants", name: "# of variants"}
+          - {id: "phenotype", name: "phenotype"}
+          - {id: "seq_regions", name: "seq_regions"}
+          - {id: "amr_classes", name: "amr_classes"}
         data: []
   sample_component:
     summary:
-      genes: 
+      phenotypes: 
     results:
-      cge_resfinder/data_yaml: {}
+      cge_resfinder/resfinder_results/std_format.json: {}
 
 #---------------------------------------------------------------------------------------------------

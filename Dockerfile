@@ -8,7 +8,7 @@ ARG FORCE_DOWNLOAD=true
 #---------------------------------------------------------------------------------------------------
 # Programs for all environments
 #---------------------------------------------------------------------------------------------------
-FROM continuumio/miniconda3:4.8.2 as build_base
+FROM continuumio/miniconda3:4.10.3 as build_base
 ONBUILD ARG BIFROST_COMPONENT_NAME
 ONBUILD ARG BUILD_ENV
 ONBUILD ARG MAINTAINER
@@ -18,8 +18,8 @@ ONBUILD LABEL \
     environment="${BUILD_ENV}" \
     maintainer="${MAINTAINER}"
 ONBUILD RUN \
-    conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==5.7.1; \
-    conda install -yq -c conda-forge -c bioconda -c default bbmap==38.58; 
+    conda install -yq -c conda-forge -c bioconda -c default snakemake-minimal==7.30.1; \
+    conda install -yq -c conda-forge -c bioconda -c default bbmap==39.01; 
 
 
 #---------------------------------------------------------------------------------------------------
@@ -67,29 +67,46 @@ ARG BIFROST_COMPONENT_NAME
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
 RUN \
     # For 'make' needed for kma
-    apt-get update &&  apt-get install -y -qq --fix-missing \
+    apt-get update &&  apt-get install -y -q --fix-missing \
         build-essential \
-        zlib1g-dev; \
+        zlib1g-dev \
+        libmagic-dev \
+        nano \
+        less; \
     pip install -q \
         cgecore==1.5.6 \
-        tabulate==0.8.3 \
-        biopython==1.74 \
-        python-dateutil==2.8.1; \
-    git clone --branch 1.3.13 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
+        cgelib==0.7.3 \
+        tabulate==0.9.0 \
+        biopython==1.81 \
+        gitpython==3.1.31 \
+        python-dateutil==2.8.2; \
+    ls /usr/bin/make; \
+    git clone --branch 1.4.12 https://bitbucket.org/genomicepidemiology/kma.git && cd kma && make
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/kma:$PATH
 
 # Resfinder
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}
 RUN \
-    git clone --branch 4.0 https://bitbucket.org/genomicepidemiology/resfinder.git
+    #git clone --branch 4.3.2 https://bitbucket.org/genomicepidemiology/resfinder.git && \
+    pip install resfinder==4.3.2
 ENV PATH /bifrost/components/${BIFROST_COMPONENT_NAME}/resfinder:$PATH
 
 #install resfinder db
 WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
 RUN \
-    git clone https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
+    git clone --branch resfinder-4.3.2 https://git@bitbucket.org/genomicepidemiology/resfinder_db.git && \
     cd resfinder_db && \
-    git checkout d98c13b && \ 
+    python3 INSTALL.py kma_index;
+
+WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
+RUN \
+    git clone --branch resfinder-4.3.2 https://git@bitbucket.org/genomicepidemiology/pointfinder_db.git && \
+    cd pointfinder_db && \
+    python3 INSTALL.py kma_index;
+WORKDIR /bifrost/components/${BIFROST_COMPONENT_NAME}/resources
+RUN \
+    git clone --branch resfinder-4.3.2 https://git@bitbucket.org/genomicepidemiology/disinfinder_db.git && \
+    cd disinfinder_db && \
     python3 INSTALL.py kma_index;
 #- Additional resources (files/DBs): end -----------------------------------------------------------
 
