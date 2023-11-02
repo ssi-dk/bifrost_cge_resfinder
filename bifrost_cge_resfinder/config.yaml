@@ -48,6 +48,7 @@ resources:
   resfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/resfinder_db"
   pointfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/pointfinder_db"
   disinfinder_db: "/bifrost/components/bifrost_cge_resfinder/resources/disinfinder_db"
+  kma_path: "/bifrost/components/bifrost_cge_resfinder/bin/kma"
 #---------------------------------------------------------------------------------------------------
 
 #-Requirements to run component---------------------------------------------------------------------
