@@ -43,19 +43,31 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str,
                          'alignment_length' : seq_region_obj.get('alignment_length'),
                          'phenotypes': seq_region_obj.get('phenotypes'),
                          'depth': seq_region_obj.get('depth'),
-                         'notes': seq_region_obj.get('notes')}
+                         'contig': seq_region_obj.get('query_id'),
+                         'contig_start_pos': seq_region_obj.get('query_start_pos'),
+                         'contig_end_pos': seq_region_obj.get('query_end_pos'),
+                         'notes': seq_region_obj.get('notes'),
+                         'pmids': seq_region_obj.get('pmids'),
+                         'ref_acc': seq_region_obj.get('ref_acc'),
+                         'grade': seq_region_obj.get('grade'),}
             phenotype_dict['genes'][gene_name] = gene_dict
         for seq_variation in seq_variation_keys:
             seq_variation_obj = seq_variations[seq_variation]
             seq_region_objs = [seq_regions[i] for i in seq_variation_obj['seq_regions']]
             gene_mutation_name = '_'.join([i['name'] for i in seq_region_objs]) + '_' + seq_variation_obj['seq_var']
             gene_dict = {'gene_id' : seq_variation_obj.get('ref_id'), 
-                         'identity' : seq_variation_obj.get('identity'),
-                         'ref_seq_length' : seq_variation_obj.get('ref_seq_length'),
-                         'alignment_length' : seq_variation_obj.get('alignment_length'),
+                         'identity' : seq_region_obj.get('identity'),
+                         'ref_seq_length' : seq_region_obj.get('ref_seq_length'),
+                         'alignment_length' : seq_region_obj.get('alignment_length'),
                          'phenotypes': seq_variation_obj.get('phenotypes'),
-                         'depth': seq_variation_obj.get('depth'),
-                         'notes': seq_variation_obj.get('notes')}
+                         'depth': seq_region_obj.get('depth'),
+                         'contig': seq_region_obj.get('query_id'),
+                         'contig_start_pos': seq_region_obj.get('query_start_pos'),
+                         'contig_end_pos': seq_region_obj.get('query_end_pos'),
+                         'notes': seq_variation_obj.get('notes'),
+                         'pmids': seq_variation_obj.get('pmids'),
+                         'ref_acc': seq_region_obj.get('ref_acc'),
+                         'grade': seq_region_obj.get('grade'),}
             phenotype_dict['genes'][gene_mutation_name] = gene_dict
 
         resistance['report']['phenotypes'][phenotype_key] = phenotype_dict
