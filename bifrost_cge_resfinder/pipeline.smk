@@ -100,7 +100,7 @@ rule run_resfinder_on_reads:
         resfinder_db = f"{os.environ['BIFROST_INSTALL_DIR']}{component['resources']['resfinder_db']}",
         pointfinder_db = f"{os.environ['BIFROST_INSTALL_DIR']}{component['resources']['pointfinder_db']}",
         disinfinder_db = f"{os.environ['BIFROST_INSTALL_DIR']}{component['resources']['disinfinder_db']}",
-	kma_path = f"{os.environ['BIFROST_INSTALL_DIR']}{component['resources']['kma_path']}"
+        kma_path = f"{os.environ['BIFROST_INSTALL_DIR']}{component['resources']['kma_path']}"
     script:
         os.path.join(os.path.dirname(workflow.snakefile), "rule__cge_resfinder.py")
 
