@@ -36,20 +36,16 @@ def rule__run_cge_resfinder(input: object, output: object, params: object, log: 
         kma_path = params.kma_path
         output_dir = output.resfinder_results
         print(species_detection)
-        if species_detection != None:
-            species = species_detection["summary"].get("species", "species_not_in_db") # currently, provided species will take priority over detected species
-        else:
+        if species_detection is not None:
+            species = species_detection["summary"].get("species")
+        if species_detection is None or species is None:
             sample_info = sample.get_category('sample_info')
             species = sample_info['summary'].get('provided_species')
             #species = None # in case the category doesnt exist
-        #if species not in component["options"]["resfinder_current_species"]:
-            #species = "Other"
+        if species not in component["options"]["resfinder_current_species"]:
+            species = "Other"
         species = "\""+species+"\"" # species string must have quotation marks when input to a shell cmd
-        #if species == '\"Other\"': # this string will be viable input in next resfinder update
-            #cmd = f"run_resfinder.py -db_res {resfinder_db} -acq -k kma/kma -ifq {reads[0]} {reads[1]} -o {output_dir}"
-        #else:
-        #cmd = f"python -m resfinder -db_res {resfinder_db} -db_point {pointfinder_db} -db_disinf {disinfinder_db} -acq --point -d -k {kma_path} -ifq {reads[0]} {reads[1]} -o {output_dir} -s {species} -j {output_dir}/{sample_name}.json --ignore_missing_species"
-        cmd = f"python -m resfinder -db_res {resfinder_db} -db_point {pointfinder_db} -db_disinf {disinfinder_db} -acq --point -d -ifq {reads[0]} {reads[1]} -o {output_dir} -s {species} -j {output_dir}/{sample_name}.json --ignore_missing_species"
+        cmd = f"python -m resfinder -db_res {resfinder_db} -db_point {pointfinder_db} -db_disinf {disinfinder_db} -acq --point -d -ifq {reads[0]} {reads[1]} -o {output_dir} -s {species} -j {output_dir}/{sample_name}.json"
         print(cmd)
         run_cmd(cmd, log)
 

@@ -25,7 +25,7 @@ install:
 #---------------------------------------------------------------------------------------------------
 
 #-Options-------------------------------------------------------------------------------------------
-options:
+options: 
   resfinder_current_species: {Campylobacter,
                               Campylobacter jejuni,
                               Campylobacter coli,
@@ -57,7 +57,7 @@ requirements:
     categories:
       paired_reads:
         summary:
-          data:
+          trimmed:
 #---------------------------------------------------------------------------------------------------
 
 #-DB Value changes (excluding component output)-----------------------------------------------------

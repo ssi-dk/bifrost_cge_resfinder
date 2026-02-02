@@ -92,7 +92,7 @@ rule run_resfinder_on_reads:
         f"{component['name']}/benchmarks/{rule_name}.benchmark"
     input:
         rules.check_requirements.output.check_file,
-        reads = sample['categories']['paired_reads']['summary']['data']
+        reads = sample['categories']['paired_reads']['summary']['trimmed']
     output:
         resfinder_results = directory(f"{component['name']}/resfinder_results")
     params:
