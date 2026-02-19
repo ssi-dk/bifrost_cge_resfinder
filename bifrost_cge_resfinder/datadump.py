@@ -76,8 +76,9 @@ def extract_resistance(resistance: Category, results: Dict, component_name: str,
         resistance['report']['phenotypes'][phenotype_key] = phenotype_dict
 
 
-def datadump(samplecomponent_ref_json: Dict):
-    samplecomponent_ref = SampleComponentReference(value=samplecomponent_ref_json)
+def datadump(samplecomponent_id: str):
+    #samplecomponent_ref = SampleComponentReference(value=samplecomponent_ref_json)
+    samplecomponent_ref = SampleComponentReference(_id=samplecomponent_id)
     samplecomponent = SampleComponent.load(samplecomponent_ref)
     sample = Sample.load(samplecomponent.sample)
     resistance = samplecomponent.get_category("resistance")
@@ -113,6 +114,7 @@ def extract_digits_from_component_version(component_str):
     version_group = re.match(version_re, component_str).groups()[0]
     version_digits = tuple([int(i) for i in version_group.split(".") if i.isdigit()])
     return version_digits
+
 datadump(
-    snakemake.params.samplecomponent_ref_json,
+    snakemake.params.samplecomponent_id,
 )
