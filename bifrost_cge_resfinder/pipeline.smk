@@ -123,7 +123,7 @@ rule run_resfinder:
         f"{component['name']}/benchmarks/{rule_name}.benchmark"
     input:
         rules.check_requirements.output.check_file,
-        filtered_reads = sample["categories"]["trimmed_reads"]["summary"]["data"]
+        contig = sample["categories"]["contigs"]["summary"]["data"]
     output:
         resfinder_results = directory(f"{component['name']}/resfinder_results"),
         tool_version = f"{component['name']}/tool_version.txt"
@@ -138,7 +138,7 @@ rule run_resfinder:
         outdir={output.resfinder_results}
 
         run_resfinder.py \
-            -ifq {input.filtered_reads[0]} {input.filtered_reads[1]} \
+            -ifa {input.contig} \
             -o $outdir \
             --acquired \
             -db_res {params.resfinder_db} \
