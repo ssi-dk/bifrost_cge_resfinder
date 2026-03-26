@@ -3,10 +3,10 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - snakemake-minimal==8.10.6
-  - bbmap=39.01
+  - snakemake-minimal
+  - bbmap
   - git
-  - kma==1.4.9
+  - kma>=1.4.9
   - pip
   - pip:
     - pytest
@@ -16,7 +16,7 @@ dependencies:
     - pyyaml
     - argh
     - watchdog
-    - jsonschema==v4.18.0a10
-    - bifrostlib
-    - resfinder
+    - jsonschema>=v4.18.0a10
+    - bifrostlib>=2.1.20
+    - resfinder>2.1.1
     - -e .

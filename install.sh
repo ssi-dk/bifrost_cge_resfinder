@@ -32,6 +32,8 @@ then
   helpFunction
 fi
 
+STAGE="${BIFROST_STAGE:+${BIFROST_STAGE}_}"
+
 if [ "$parameterI" == "LOCAL" ]
 then
   echo "Starting local install"
@@ -79,8 +81,8 @@ fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REQ_TXT="$SCRIPT_DIR/environment.yml"
-
-CONFIG_YAML_PATH=$(find $SCRIPT_DIR -name "config.yaml")
+_config_yaml_dir=$(basename -- "$SCRIPT_DIR")
+CONFIG_YAML_PATH=$_config_yaml_dir"/config.yaml"
 if test -f "$CONFIG_YAML_PATH";
 then
   COMPONENT_NAME=$(grep "display_name:.*." $CONFIG_YAML_PATH | tr " " "\n" | grep -v "display_name:")
@@ -95,7 +97,7 @@ then
       echo "code: in config.yaml should contain component version"
       exit 1
   fi
-  ENV_NAME=("bifrost_"$COMPONENT_NAME"_"$COMPONENT_VERSION)
+  ENV_NAME=("bifrost_"${STAGE}$COMPONENT_NAME"_"$COMPONENT_VERSION)
 else
   echo "Cannot find config.yaml in component folder to form env name"
   exit 1
@@ -118,7 +120,7 @@ else
   exit 1
 fi
 
-#check if environment.yml file exists
+# Create conda environment from environment.yml if the file exists
 if test -f "$REQ_TXT";
 then
   echo "Making conda env"
