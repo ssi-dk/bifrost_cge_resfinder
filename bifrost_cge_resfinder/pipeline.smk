@@ -47,6 +47,10 @@ except Exception:
     print(traceback.format_exc(), file=sys.stderr)
     raise Exception("failed to set sample, component and/or samplecomponent")
 
+if not samplecomponent.has_requirements():
+   common.set_status_and_save(sample, samplecomponent, "Requirements not met")
+   raise SystemExit("Requirements not met")
+
 onerror:
     if not samplecomponent.has_requirements():
         common.set_status_and_save(sample, samplecomponent, "Requirements not met")
@@ -98,23 +102,6 @@ rule setup:
         samplecomponent["path"] = os.path.join(os.getcwd(), component["name"])
         samplecomponent.save()
 
-rule_name = "check_requirements"
-rule check_requirements:
-    message:
-        f"Running step:{rule_name}"
-    log:
-        out_file = f"{component['name']}/log/{rule_name}.out.log",
-        err_file = f"{component['name']}/log/{rule_name}.err.log",
-    benchmark:
-        f"{component['name']}/benchmarks/{rule_name}.benchmark"
-    input:
-        folder = rules.setup.output.init_file
-    output:
-        check_file = touch(f"{component['name']}/requirements_met")
-    run:
-        if samplecomponent.has_requirements():
-            pass
-
 #* Dynamic section: start **************************************************************************
 
 def determine_species(sample, component):
@@ -141,7 +128,6 @@ rule run_resfinder:
     benchmark:
         f"{component['name']}/benchmarks/{rule_name}.benchmark"
     input:
-        rules.check_requirements.output.check_file,
         contig = sample["categories"]["contigs"]["summary"]["data"]
     output:
         resfinder_results = directory(f"{component['name']}/resfinder_results"),
